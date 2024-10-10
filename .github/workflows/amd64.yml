@@ -28,6 +28,7 @@ jobs:
           docker pull "${image}" --platform "linux/amd64"
           docker save "${image}" -o "${image//\//_}-amd64.tar"
           image_tag=${image/":"/"-"}
+          image_tag=${image_tag//\//_}
           docker tag "${image}" crpi-w74i707dscu3e5f6.cn-shanghai.personal.cr.aliyuncs.com/jiangzhonghui/nvidia:${image_tag}
           docker login --username=kkry2333 crpi-w74i707dscu3e5f6.cn-shanghai.personal.cr.aliyuncs.com
           docker push crpi-w74i707dscu3e5f6.cn-shanghai.personal.cr.aliyuncs.com/jiangzhonghui/nvidia:${image_tag}
