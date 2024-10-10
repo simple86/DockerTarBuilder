@@ -6,6 +6,10 @@ on:
         description: '请填写docker镜像名称 多个用英文逗号分开'
         required: true
         default: 'alpine:latest'  # 设置默认的 Docker 镜像列表
+      docker_password:
+        description: '请输入 aliyun docker 服务密码'
+        required: true
+        default: 'password' 
 
 jobs:
   pull_and_package:
@@ -23,6 +27,7 @@ jobs:
     - name: Pull Docker Images and Package
       run: |
         images="${{ github.event.inputs.docker_images }}"
+        password="${{ github.event.inputs.docker_password }}"
         IFS=',' read -r -a image_array <<< "$images"
         for image in "${image_array[@]}"; do
           docker pull "${image}" --platform "linux/amd64"
@@ -30,7 +35,7 @@ jobs:
           image_tag=${image/":"/"-"}
           image_tag=${image_tag//\//_}
           docker tag "${image}" crpi-w74i707dscu3e5f6.cn-shanghai.personal.cr.aliyuncs.com/jiangzhonghui/nvidia:${image_tag}
-          docker login --username=kkry2333 crpi-w74i707dscu3e5f6.cn-shanghai.personal.cr.aliyuncs.com
+          echo "${password}" | docker login --username=kkry2333 --password-stdin crpi-w74i707dscu3e5f6.cn-shanghai.personal.cr.aliyuncs.com
           docker push crpi-w74i707dscu3e5f6.cn-shanghai.personal.cr.aliyuncs.com/jiangzhonghui/nvidia:${image_tag}
         done
 
